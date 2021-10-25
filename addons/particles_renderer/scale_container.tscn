@@ -1,0 +1,124 @@
+[gd_scene format=2]
+
+[node name="ScaleContainer" type="Control"]
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -176.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxActualSizeContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+margin_bottom = 42.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ActualSpriteSizeLabel" type="Label" parent="VBoxActualSizeContainer"]
+margin_right = 176.0
+margin_bottom = 14.0
+text = "Actual sprite size"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxActualSizeContainer"]
+margin_top = 18.0
+margin_right = 176.0
+margin_bottom = 42.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LabelX" type="Label" parent="VBoxActualSizeContainer/HBoxContainer"]
+margin_left = 16.0
+margin_top = 5.0
+margin_right = 24.0
+margin_bottom = 19.0
+text = "X"
+
+[node name="InputSizeX" type="LineEdit" parent="VBoxActualSizeContainer/HBoxContainer"]
+margin_left = 28.0
+margin_right = 86.0
+margin_bottom = 24.0
+text = "0"
+align = 1
+editable = false
+
+[node name="LabelY" type="Label" parent="VBoxActualSizeContainer/HBoxContainer"]
+margin_left = 90.0
+margin_top = 5.0
+margin_right = 97.0
+margin_bottom = 19.0
+text = "Y"
+
+[node name="InputSizeY" type="LineEdit" parent="VBoxActualSizeContainer/HBoxContainer"]
+margin_left = 101.0
+margin_right = 159.0
+margin_bottom = 24.0
+text = "0"
+align = 1
+editable = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxSliderContainer" type="VBoxContainer" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -22.0
+margin_top = 64.0
+margin_right = 23.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxSliderContainer"]
+margin_right = 45.0
+margin_bottom = 14.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScaleLabel" type="Label" parent="VBoxSliderContainer/HBoxContainer"]
+margin_right = 33.0
+margin_bottom = 14.0
+text = "Scale"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScaleNumber" type="Label" parent="VBoxSliderContainer/HBoxContainer"]
+margin_left = 37.0
+margin_right = 45.0
+margin_bottom = 14.0
+text = "1"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScaleSlider" type="VSlider" parent="."]
+margin_left = 64.0
+margin_top = 88.0
+margin_right = 112.0
+margin_bottom = 388.0
+rect_min_size = Vector2( 0, 300 )
+min_value = 1.0
+max_value = 10.0
+value = 1.0
+tick_count = 10
+ticks_on_borders = true
+__meta__ = {
+"_edit_use_anchors_": false
+}

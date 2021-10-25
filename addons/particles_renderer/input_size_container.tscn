@@ -1,0 +1,145 @@
+[gd_scene format=2]
+
+[node name="InputSizeContainer" type="Control"]
+anchor_right = 1.0
+margin_bottom = 48.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="VBoxContainerBaseSpriteSize" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 194.0
+margin_right = 479.0
+margin_bottom = 48.0
+alignment = 1
+
+[node name="Title" type="Label" parent="HBoxContainer/VBoxContainerBaseSpriteSize"]
+margin_top = 3.0
+margin_right = 285.0
+margin_bottom = 17.0
+text = "Base sprite size"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainerBaseSpriteSize"]
+margin_top = 21.0
+margin_right = 285.0
+margin_bottom = 45.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LabelX" type="Label" parent="HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer"]
+margin_top = 5.0
+margin_right = 8.0
+margin_bottom = 19.0
+text = "X"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InputSizeX" type="LineEdit" parent="HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer"]
+margin_left = 12.0
+margin_right = 70.0
+margin_bottom = 24.0
+text = "32"
+align = 1
+max_length = 3
+placeholder_text = "0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="LabelY" type="Label" parent="HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer"]
+margin_left = 74.0
+margin_top = 5.0
+margin_right = 81.0
+margin_bottom = 19.0
+text = "Y"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="InputSizeY" type="LineEdit" parent="HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer"]
+margin_left = 85.0
+margin_right = 143.0
+margin_bottom = 24.0
+text = "32"
+align = 1
+max_length = 3
+placeholder_text = "0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ProportionCheckBox" type="CheckBox" parent="HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer"]
+margin_left = 147.0
+margin_right = 285.0
+margin_bottom = 24.0
+pressed = true
+text = "Keep proportions"
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 483.0
+margin_right = 503.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 20, 0 )
+
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 507.0
+margin_right = 527.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 20, 0 )
+
+[node name="VBoxContainerMaxFrames" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 531.0
+margin_right = 605.0
+margin_bottom = 48.0
+alignment = 1
+
+[node name="Title" type="Label" parent="HBoxContainer/VBoxContainerMaxFrames"]
+margin_top = 3.0
+margin_right = 74.0
+margin_bottom = 17.0
+text = "Max frames"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainerMaxFrames"]
+margin_top = 21.0
+margin_right = 74.0
+margin_bottom = 45.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MaxFrames" type="LineEdit" parent="HBoxContainer/VBoxContainerMaxFrames/HBoxContainer"]
+margin_left = 8.0
+margin_right = 66.0
+margin_bottom = 24.0
+align = 1
+max_length = 3
+placeholder_text = "0"
+__meta__ = {
+"_edit_use_anchors_": false
+}

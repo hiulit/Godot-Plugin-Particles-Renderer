@@ -1,0 +1,60 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://addons/particles_renderer/buttons_container.tscn" type="PackedScene" id=1]
+[ext_resource path="res://addons/particles_renderer/menu_bar.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/particles_renderer/draw.tscn" type="PackedScene" id=3]
+[ext_resource path="res://addons/particles_renderer/particles_renderer_window.gd" type="Script" id=4]
+[ext_resource path="res://addons/particles_renderer/viewport_container.tscn" type="PackedScene" id=5]
+[ext_resource path="res://addons/particles_renderer/scale_container.tscn" type="PackedScene" id=6]
+[ext_resource path="res://addons/particles_renderer/input_size_container.tscn" type="PackedScene" id=7]
+[ext_resource path="res://addons/particles_renderer/bottom_bar.tscn" type="PackedScene" id=8]
+[ext_resource path="res://addons/particles_renderer/error_container.tscn" type="PackedScene" id=9]
+
+[node name="ParticlesRendererWindow" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ErrorContainer" parent="." instance=ExtResource( 9 )]
+
+[node name="MenuBar" parent="." instance=ExtResource( 2 )]
+
+[node name="InputSizeContainer" parent="." instance=ExtResource( 7 )]
+margin_top = 40.0
+margin_bottom = 88.0
+
+[node name="ScaleContainer" parent="." instance=ExtResource( 6 )]
+margin_top = 96.0
+
+[node name="ViewportContainer" parent="." instance=ExtResource( 5 )]
+
+[node name="Draw" parent="." instance=ExtResource( 3 )]
+
+[node name="ButtonsContainer" parent="." instance=ExtResource( 1 )]
+margin_top = -96.0
+margin_bottom = -40.0
+
+[node name="BottomBar" parent="." instance=ExtResource( 8 )]
+
+[connection signal="file_selected" from="MenuBar/OpenFileFileDialog" to="." method="_on_OpenFileFileDialog_file_selected"]
+[connection signal="text_changed" from="InputSizeContainer/HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer/InputSizeX" to="." method="_on_InputSizeX_text_changed"]
+[connection signal="text_changed" from="InputSizeContainer/HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer/InputSizeY" to="." method="_on_InputSizeY_text_changed"]
+[connection signal="toggled" from="InputSizeContainer/HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer/ProportionCheckBox" to="." method="_on_ProportionCheckBox_toggled"]
+[connection signal="text_changed" from="InputSizeContainer/HBoxContainer/VBoxContainerMaxFrames/HBoxContainer/MaxFrames" to="." method="_on_MaxFrames_text_changed"]
+[connection signal="value_changed" from="ScaleContainer/ScaleSlider" to="." method="_on_ScaleSlider_value_changed"]
+[connection signal="pressed" from="ButtonsContainer/HBoxContainer/EmitButton" to="." method="_on_EmitButton_pressed"]
+[connection signal="pressed" from="ButtonsContainer/HBoxContainer/StopButton" to="." method="_on_StopButton_pressed"]
+[connection signal="pressed" from="ButtonsContainer/HBoxContainer/RenderButton" to="." method="_on_RenderButton_pressed"]
+[connection signal="toggled" from="ButtonsContainer/HBoxContainer/RenderCheckBox" to="." method="_on_RenderCheckBox_toggled"]
+[connection signal="pressed" from="BottomBar/VBoxContainer/HBoxContainer/HBoxContainerOutputPath/ChoosePathButton" to="." method="_on_ChoosePathButton_pressed"]
+[connection signal="text_changed" from="BottomBar/VBoxContainer/HBoxContainer/HBoxContainerFileName/FileNameLineEdit" to="." method="_on_FileNameLineEdit_text_changed"]
+[connection signal="dir_selected" from="BottomBar/ChoosePathFileDialog" to="." method="_on_ChoosePathFileDialog_dir_selected"]
+
+[editable path="MenuBar"]
+[editable path="InputSizeContainer"]
+[editable path="ScaleContainer"]
+[editable path="ButtonsContainer"]
+[editable path="BottomBar"]
