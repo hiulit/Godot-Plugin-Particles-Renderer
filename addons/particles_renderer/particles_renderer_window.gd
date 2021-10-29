@@ -129,7 +129,9 @@ func disable_buttons() -> void:
 func enable_buttons() -> void:
 	if "emitting" in particles_node:
 		emit_button.disabled = false
-		emit_stop_button.disabled = false
+
+		if "one_shot" in particles_node and not particles_node.one_shot:
+			emit_stop_button.disabled = false
 
 	render_button.disabled = false
 	render_checkbox.disabled = false
