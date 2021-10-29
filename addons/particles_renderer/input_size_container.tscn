@@ -16,8 +16,8 @@ __meta__ = {
 }
 
 [node name="VBoxContainerBaseSpriteSize" type="VBoxContainer" parent="HBoxContainer"]
-margin_left = 194.0
-margin_right = 479.0
+margin_left = 27.0
+margin_right = 312.0
 margin_bottom = 48.0
 alignment = 1
 
@@ -96,26 +96,20 @@ pressed = true
 text = "Keep proportions"
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
-margin_left = 483.0
-margin_right = 503.0
+margin_left = 316.0
+margin_right = 396.0
 margin_bottom = 48.0
-rect_min_size = Vector2( 20, 0 )
-
-[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer"]
-margin_left = 507.0
-margin_right = 527.0
-margin_bottom = 48.0
-rect_min_size = Vector2( 20, 0 )
+rect_min_size = Vector2( 80, 0 )
 
 [node name="VBoxContainerMaxFrames" type="VBoxContainer" parent="HBoxContainer"]
-margin_left = 531.0
-margin_right = 605.0
+margin_left = 400.0
+margin_right = 561.0
 margin_bottom = 48.0
 alignment = 1
 
 [node name="Title" type="Label" parent="HBoxContainer/VBoxContainerMaxFrames"]
 margin_top = 3.0
-margin_right = 74.0
+margin_right = 161.0
 margin_bottom = 17.0
 text = "Max frames"
 align = 1
@@ -126,7 +120,7 @@ __meta__ = {
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainerMaxFrames"]
 margin_top = 21.0
-margin_right = 74.0
+margin_right = 161.0
 margin_bottom = 45.0
 alignment = 1
 __meta__ = {
@@ -134,9 +128,101 @@ __meta__ = {
 }
 
 [node name="MaxFrames" type="LineEdit" parent="HBoxContainer/VBoxContainerMaxFrames/HBoxContainer"]
-margin_left = 8.0
-margin_right = 66.0
+margin_right = 58.0
 margin_bottom = 24.0
+align = 1
+max_length = 3
+placeholder_text = "0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ContiguousMaxFramesCheckBox" type="CheckBox" parent="HBoxContainer/VBoxContainerMaxFrames/HBoxContainer"]
+margin_left = 62.0
+margin_right = 161.0
+margin_bottom = 24.0
+text = "Contiguous"
+
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 565.0
+margin_right = 585.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 20, 0 )
+
+[node name="VBoxContainerFPS" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 589.0
+margin_right = 647.0
+margin_bottom = 48.0
+alignment = 1
+
+[node name="Title" type="Label" parent="HBoxContainer/VBoxContainerFPS"]
+margin_top = 3.0
+margin_right = 58.0
+margin_bottom = 17.0
+text = "FPS"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainerFPS"]
+margin_top = 21.0
+margin_right = 58.0
+margin_bottom = 45.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="FPS" type="LineEdit" parent="HBoxContainer/VBoxContainerFPS/HBoxContainer"]
+margin_right = 58.0
+margin_bottom = 24.0
+text = "60"
+align = 1
+max_length = 3
+placeholder_text = "0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer3" type="MarginContainer" parent="HBoxContainer"]
+margin_left = 651.0
+margin_right = 671.0
+margin_bottom = 48.0
+rect_min_size = Vector2( 20, 0 )
+
+[node name="VBoxContainerTime" type="VBoxContainer" parent="HBoxContainer"]
+margin_left = 675.0
+margin_right = 772.0
+margin_bottom = 48.0
+alignment = 1
+
+[node name="Title" type="Label" parent="HBoxContainer/VBoxContainerTime"]
+margin_top = 3.0
+margin_right = 97.0
+margin_bottom = 17.0
+text = "Time (seconds)"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainerTime"]
+margin_top = 21.0
+margin_right = 97.0
+margin_bottom = 45.0
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Time" type="LineEdit" parent="HBoxContainer/VBoxContainerTime/HBoxContainer"]
+margin_left = 19.0
+margin_right = 77.0
+margin_bottom = 24.0
+text = "1"
 align = 1
 max_length = 3
 placeholder_text = "0"
