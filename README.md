@@ -32,7 +32,7 @@ If `keep proportions` is checked, when changing one value, the other value will 
 
 ### Max frames
 
-The number frames that will be rendered.
+The number of frames that will be rendered.
 
 The renderer will remove in-between frames from the total frames to match the number set.
 
