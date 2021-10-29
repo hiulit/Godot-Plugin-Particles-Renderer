@@ -1,0 +1,27 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/particles_renderer/time_progress.png" type="Texture" id=1]
+[ext_resource path="res://addons/particles_renderer/time_progress.gd" type="Script" id=2]
+
+[node name="TimeProgress" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TextureProgress" type="TextureProgress" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -150.0
+margin_top = -150.0
+margin_right = 150.0
+margin_bottom = 150.0
+texture_progress = ExtResource( 1 )
+fill_mode = 4
+__meta__ = {
+"_edit_use_anchors_": false
+}
