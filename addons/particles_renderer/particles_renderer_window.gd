@@ -1,7 +1,7 @@
 extends Control
 
 var app_name := "Particles Renderer"
-var app_version := "0.1.0"
+var app_version := "1.0.0"
 var contiguous_frames := false
 var initial_fps: int
 var keep_proportions := true
