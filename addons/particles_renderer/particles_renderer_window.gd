@@ -344,10 +344,6 @@ func _on_OpenFileFileDialog_file_selected(path: String) -> void:
 	sprite_sheets_counter = 0
 
 	particles_node = load(path).instance()
-
-	if "emitting" in particles_node:
-		particles_node.emitting = false
-
 	particles_node.position = target_viewport.size / 2.0
 	particles_node.scale = Vector2.ONE * scale_slider.value
 
