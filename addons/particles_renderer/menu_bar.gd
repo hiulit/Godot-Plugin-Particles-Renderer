@@ -19,7 +19,7 @@ func _ready():
 	menu_popup_file.connect("id_pressed", self, "_on_menu_popup_file_item_pressed")
 
 	menu_popup_help = menu_button_help.get_popup()
-	menu_popup_help.add_item("Documentation")
+	menu_popup_help.add_item("Documentation (online)")
 	menu_popup_help.add_item("About")
 	menu_popup_help.connect("id_pressed", self, "_on_menu_popup_help_item_pressed")
 
@@ -38,7 +38,7 @@ func _on_menu_popup_help_item_pressed(id):
 	var item_name = menu_popup_help.get_item_text(id)
 
 	match item_name:
-		"Documentation":
+		"Documentation (online)":
 			OS.shell_open("https://github.com/hiulit/Godot-Plugin-Particles-Renderer")
 		"About":
 			window_dialog_about.popup_centered_ratio(0.25)
