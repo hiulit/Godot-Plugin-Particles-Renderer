@@ -21,6 +21,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Godot Plugin Particles Renderer"
+run/main_scene="res://addons/particles_renderer/particles_renderer_window.tscn"
 config/icon="res://icon.png"
 
 [display]
@@ -28,10 +29,6 @@ config/icon="res://icon.png"
 window/size/width=800
 window/stretch/mode="2d"
 window/stretch/aspect="keep"
-
-[editor_plugins]
-
-enabled=PoolStringArray( "res://addons/particles_renderer/plugin.cfg" )
 
 [physics]
 
