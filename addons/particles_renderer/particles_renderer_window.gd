@@ -2,16 +2,22 @@ extends Control
 
 var app_name := "Particles Renderer"
 var app_version := "0.1.0"
+var contiguous_frames := false
+var initial_fps: int
 var keep_proportions := true
+var fps: int
 var max_frames := 0
 var output_path: String
 var particles_node
-var render_with_scaling = false
+var render_with_scaling := false
+var rendering := false
 var skip_frame := 1
 var sprite_sheet_file_name: String
 var sprite_sheets_counter := 0
 var sprite_size := Vector2(32, 32) setget _set_sprite_size
 var sprites_counter := 0
+var time: float
+var timer := 0.0
 var tmp_path := "user://particles_renderer_tmp"
 var window_size := Vector2(800, 600)
 
@@ -20,12 +26,12 @@ var about_string := (
 	+ "[u][b]%app_name[/b][/u]"
 	+ "\n\n"
 	+ "[table=2]"
-	+ "[cell]Version: [/cell]"
-	+ "[cell]%app_version[/cell]"
-	+ "[cell]License: [/cell]"
-	+ "[cell]MIT[/cell]"
-	+ "[cell]Author: [/cell]"
-	+ "[cell]hiulit[/cell]"
+	+ "[cell][right]Version: [/right][/cell]"
+	+ "[cell][right]%app_version[/right][/cell]"
+	+ "[cell][right]License: [/right][/cell]"
+	+ "[cell][right]MIT[/right][/cell]"
+	+ "[cell][right]Author: [/right][/cell]"
+	+ "[cell][right]hiulit[/right][/cell]"
 	+ "[/table]"
 	+ "[/center]"
 )
@@ -38,23 +44,29 @@ onready var base_input_size_y := $InputSizeContainer/HBoxContainer/VBoxContainer
 onready var choose_path_file_dialog := $BottomBar/ChoosePathFileDialog
 onready var draw := $Draw
 onready var emit_button := $ButtonsContainer/HBoxContainer/EmitButton
+onready var emit_stop_button := $ButtonsContainer/HBoxContainer/EmitStopButton
 onready var error_dialog := $ErrorContainer/WindowDialog
 onready var error_text := $ErrorContainer/WindowDialog/RichTextLabel
 onready var file_name_line_edit := $BottomBar/VBoxContainer/HBoxContainer/HBoxContainerFileName/FileNameLineEdit
+onready var input_fps := $InputSizeContainer/HBoxContainer/VBoxContainerFPS/HBoxContainer/FPS
 onready var input_max_frames := $InputSizeContainer/HBoxContainer/VBoxContainerMaxFrames/HBoxContainer/MaxFrames
+onready var input_time := $InputSizeContainer/HBoxContainer/VBoxContainerTime/HBoxContainer/Time
 onready var keep_proportions_checkbox := $InputSizeContainer/HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer/ProportionCheckBox
 onready var output_path_line_edit := $BottomBar/VBoxContainer/HBoxContainer/HBoxContainerOutputPath/LineEdit
+onready var overlay := $Overlay
 onready var render_button := $ButtonsContainer/HBoxContainer/RenderButton
 onready var render_checkbox := $ButtonsContainer/HBoxContainer/RenderCheckBox
 onready var scale_number := $ScaleContainer/VBoxSliderContainer/HBoxContainer/ScaleNumber
 onready var scale_slider := $ScaleContainer/ScaleSlider
-onready var stop_button := $ButtonsContainer/HBoxContainer/StopButton
 onready var target_viewport := $ViewportContainer/Viewport
+onready var time_progress := $Overlay/TimeProgress/TextureProgress
 onready var viewport_container := $ViewportContainer
 
 
 func _ready() -> void:
 	set_process(false)
+
+	create_directory(tmp_path)
 
 	get_tree().set_screen_stretch(
 		SceneTree.STRETCH_MODE_2D, SceneTree.STRETCH_ASPECT_KEEP, window_size
@@ -64,13 +76,15 @@ func _ready() -> void:
 	OS.set_min_window_size(window_size)
 	OS.set_window_size(window_size)
 
-	about_string = about_string.replace("%app_name", app_name)
-	about_string = about_string.replace("%app_version", app_version)
-	about_text.bbcode_text = about_string
+	initial_fps = Engine.get_target_fps()
+	fps = int(input_fps.text)
+	Engine.set_target_fps(fps)
+
+	time = float(input_time.text)
 
 	disable_buttons()
 
-	set_viewport_size(sprite_size)
+	self.sprite_size = sprite_size
 
 	target_viewport.transparent_bg = true
 	target_viewport.usage = Viewport.USAGE_2D
@@ -80,29 +94,43 @@ func _ready() -> void:
 
 	scale_slider.value = 1.0
 
-	create_directory(tmp_path)
+	about_string = about_string.replace("%app_name", app_name)
+	about_string = about_string.replace("%app_version", app_version)
+	about_text.bbcode_text = about_string
+
+	time_progress.step = 0.01
 
 
 func _process(delta: float) -> void:
+	timer += delta
+
+	time_progress.value = timer
+
+	if timer > time or "emitting" in particles_node and not particles_node.emitting:
+		timer = 0
+		rendering = false
+
 	generate_sprite()
 
-	if not particles_node.emitting:
+	if not rendering:
+		overlay.visible = false
 		set_process(false)
-
 		generate_sprite_sheet()
 
 
 func disable_buttons() -> void:
 	emit_button.disabled = true
-	stop_button.disabled = true
+	emit_stop_button.disabled = true
 	render_button.disabled = true
 	render_checkbox.disabled = true
 	render_checkbox.pressed = false
 
 
 func enable_buttons() -> void:
-	emit_button.disabled = false
-	stop_button.disabled = false
+	if "emitting" in particles_node:
+		emit_button.disabled = false
+		emit_stop_button.disabled = false
+
 	render_button.disabled = false
 	render_checkbox.disabled = false
 	render_checkbox.pressed = true
@@ -140,14 +168,12 @@ func delete_sprites(path: String) -> void:
 		var file = dir.get_next()
 
 		while file != "":
-#			if not sprite_sheet_file_name in file:
 			dir.remove(file)
-
 			file = dir.get_next()
 
 		dir.list_dir_end()
 	else:
-		printerr("ERROR: Can't access '%s'" % path)
+		show_error("Can't access '%s'." % path)
 
 
 func generate_sprite() -> void:
@@ -157,41 +183,45 @@ func generate_sprite() -> void:
 		sprites_counter -= 1
 		return
 
-	image.flip_y()
-
 	var image_path = tmp_path.plus_file("%0*d.png") % [2, sprites_counter]
 
+	image.flip_y()
 	image.save_png(image_path)
 
 	sprites_counter += 1
 
 
 func generate_sprite_sheet() -> void:
-	var image = Image.new()
-	var image_size = Vector2(sprites_counter * sprite_size.x, sprite_size.y)
+	var image := Image.new()
+	var image_size := Vector2(sprites_counter * sprite_size.x, sprite_size.y)
 
 	if max_frames > 0:
-		skip_frame = ceil(sprites_counter / float(max_frames))
 		image_size.x = max_frames * sprite_size.x
+
+		if contiguous_frames:
+			skip_frame = 1
+			sprites_counter = max_frames
+		else:
+			skip_frame = ceil(sprites_counter / float(max_frames))
 
 	image.create(image_size.x, image_size.y, false, Image.FORMAT_RGBA8)
 
-	var position_x := 0
+	var pointer := 0
 
 	for i in range(0, sprites_counter, skip_frame):
-		var blit_image = Image.new()
+		var blit_image := Image.new()
 
 		blit_image.load(tmp_path.plus_file("%0*d.png") % [2, i])
 
 		image.blit_rect(
 			blit_image,
 			Rect2(0, 0, sprite_size.x, sprite_size.y),
-			Vector2(position_x * sprite_size.x, 0)
+			Vector2(pointer * sprite_size.x, 0)
 		)
 
-		position_x += 1
+		pointer += 1
 
-	var image_path = (
+	var image_path := (
 		output_path.plus_file(sprite_sheet_file_name + "_%0*d.png")
 		% [2, sprite_sheets_counter]
 	)
@@ -210,28 +240,62 @@ func load_preview_texture(image_path) -> void:
 	OS.shell_open(str("file://") + ProjectSettings.globalize_path(image_path))
 
 
+func show_error(message: String, size := Vector2(300, 50)):
+	error_text.text = message
+	error_dialog.popup_centered(size)
+
+
+func sprite_sheet_too_large():
+	var sprite_sheet_width: int
+	var calculation_string: String
+
+	if max_frames == 0:
+		sprite_sheet_width = fps * time * sprite_size.x
+		calculation_string = (
+			"'FPS' (%s) * 'Time' (%s) * 'Base sprite size X' (%s)" % [fps, time, sprite_size.x]
+		)
+	else:
+		sprite_sheet_width = max_frames * sprite_size.x
+		calculation_string = (
+			"'Max frames' (%s) * 'Base sprite size X' (%s)" % [max_frames, sprite_size.x]
+		)
+
+	if sprite_sheet_width > 16384:
+		show_error(
+			"The sprite sheet image's width ("
+			+ calculation_string + " = "
+			+ str(sprite_sheet_width) + "px) "
+			+ "cannot be greater than 16384px."
+			+ "\n\n"
+			+ "Try setting 'Max frames' or lowering 'FPS' or 'Time' "
+			+ "to decrease the sprite sheet image's width.",
+			Vector2(500, 100)
+		)
+		return true
+
+
 func _on_EmitButton_pressed() -> void:
 	particles_node.emitting = true
 
 
-func _on_StopButton_pressed() -> void:
+func _on_EmitStopButton_pressed() -> void:
 	particles_node.emitting = false
 
 
 func _on_RenderButton_pressed() -> void:
 	if not output_path:
-		error_text.text = "An output path must be provided."
-		error_dialog.popup_centered(Vector2(300, 50))
+		show_error("An output path must be provided.")
 		return
 
 	if not sprite_sheet_file_name:
-		error_text.text = "A file name must be provided."
-		error_dialog.popup_centered(Vector2(300, 50))
+		show_error("A file name must be provided.")
 		return
 
 	if sprite_size.x == 0 or sprite_size.y == 0:
-		error_text.text = "The X and Y values of 'Base sprite size' must be both greater than '0'."
-		error_dialog.popup_centered(Vector2(300, 50))
+		show_error("The X and Y values of 'Base sprite size' must be both greater than '0'.")
+		return
+
+	if sprite_sheet_too_large():
 		return
 
 	if render_with_scaling:
@@ -241,10 +305,15 @@ func _on_RenderButton_pressed() -> void:
 		self.sprite_size = Vector2(int(base_input_size_x.text), int(base_input_size_y.text))
 		particles_node.scale = Vector2.ONE
 
+	overlay.visible = true
+	time_progress.max_value = time - 0.05
+	time_progress.value = 0
+	rendering = true
 	set_process(true)
 
-	if not particles_node.emitting:
-		particles_node.emitting = true
+	if "emitting" in particles_node:
+		if not particles_node.emitting:
+			particles_node.emitting = true
 
 
 func _on_RenderCheckBox_toggled(button_pressed):
@@ -275,7 +344,10 @@ func _on_OpenFileFileDialog_file_selected(path: String) -> void:
 	sprite_sheets_counter = 0
 
 	particles_node = load(path).instance()
-	particles_node.emitting = false
+
+	if "emitting" in particles_node:
+		particles_node.emitting = false
+
 	particles_node.position = target_viewport.size / 2.0
 	particles_node.scale = Vector2.ONE * scale_slider.value
 
@@ -315,12 +387,31 @@ func _on_InputSizeY_text_changed(new_text: String) -> void:
 		base_input_size_x.text = new_text
 
 
-func _on_ProportionCheckBox_toggled(button_pressed):
+func _on_ProportionCheckBox_toggled(button_pressed: bool) -> void:
 	keep_proportions = button_pressed
 
 
 func _on_MaxFrames_text_changed(new_text: String) -> void:
 	max_frames = int(new_text)
+
+	if max_frames > fps:
+		show_error("Max frames cannot be greater than FPS.")
+		max_frames = fps
+		input_max_frames.text = str(max_frames)
+
+
+
+func _on_ContiguousMaxFramesCheckBox_toggled(button_pressed: bool) -> void:
+	contiguous_frames = button_pressed
+
+
+func _on_FPS_text_changed(new_text: String) -> void:
+	fps = int(new_text)
+	Engine.set_target_fps(fps)
+
+
+func _on_Time_text_changed(new_text: String) -> void:
+	time = float(new_text)
 
 
 func _on_ChoosePathButton_pressed() -> void:
@@ -330,6 +421,10 @@ func _on_ChoosePathButton_pressed() -> void:
 func _on_FileNameLineEdit_text_changed(new_text: String) -> void:
 	sprite_sheet_file_name = new_text
 	sprite_sheets_counter = 0
+
+
+func _on_ParticlesRendererWindow_tree_exited():
+	Engine.set_target_fps(initial_fps)
 
 
 func _set_sprite_size(new_value):

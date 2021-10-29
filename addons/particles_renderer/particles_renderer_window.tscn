@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://addons/particles_renderer/buttons_container.tscn" type="PackedScene" id=1]
 [ext_resource path="res://addons/particles_renderer/menu_bar.tscn" type="PackedScene" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://addons/particles_renderer/input_size_container.tscn" type="PackedScene" id=7]
 [ext_resource path="res://addons/particles_renderer/bottom_bar.tscn" type="PackedScene" id=8]
 [ext_resource path="res://addons/particles_renderer/error_container.tscn" type="PackedScene" id=9]
+[ext_resource path="res://addons/particles_renderer/overlay.tscn" type="PackedScene" id=10]
 
 [node name="ParticlesRendererWindow" type="Control"]
 anchor_right = 1.0
@@ -27,7 +28,8 @@ margin_top = 40.0
 margin_bottom = 88.0
 
 [node name="ScaleContainer" parent="." instance=ExtResource( 6 )]
-margin_top = 96.0
+margin_top = 128.0
+margin_bottom = -128.0
 
 [node name="ViewportContainer" parent="." instance=ExtResource( 5 )]
 
@@ -39,14 +41,21 @@ margin_bottom = -40.0
 
 [node name="BottomBar" parent="." instance=ExtResource( 8 )]
 
+[node name="Overlay" parent="." instance=ExtResource( 10 )]
+visible = false
+
+[connection signal="tree_exited" from="." to="." method="_on_ParticlesRendererWindow_tree_exited"]
 [connection signal="file_selected" from="MenuBar/OpenFileFileDialog" to="." method="_on_OpenFileFileDialog_file_selected"]
 [connection signal="text_changed" from="InputSizeContainer/HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer/InputSizeX" to="." method="_on_InputSizeX_text_changed"]
 [connection signal="text_changed" from="InputSizeContainer/HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer/InputSizeY" to="." method="_on_InputSizeY_text_changed"]
 [connection signal="toggled" from="InputSizeContainer/HBoxContainer/VBoxContainerBaseSpriteSize/HBoxContainer/ProportionCheckBox" to="." method="_on_ProportionCheckBox_toggled"]
 [connection signal="text_changed" from="InputSizeContainer/HBoxContainer/VBoxContainerMaxFrames/HBoxContainer/MaxFrames" to="." method="_on_MaxFrames_text_changed"]
+[connection signal="toggled" from="InputSizeContainer/HBoxContainer/VBoxContainerMaxFrames/HBoxContainer/ContiguousMaxFramesCheckBox" to="." method="_on_ContiguousMaxFramesCheckBox_toggled"]
+[connection signal="text_changed" from="InputSizeContainer/HBoxContainer/VBoxContainerFPS/HBoxContainer/FPS" to="." method="_on_FPS_text_changed"]
+[connection signal="text_changed" from="InputSizeContainer/HBoxContainer/VBoxContainerTime/HBoxContainer/Time" to="." method="_on_Time_text_changed"]
 [connection signal="value_changed" from="ScaleContainer/ScaleSlider" to="." method="_on_ScaleSlider_value_changed"]
 [connection signal="pressed" from="ButtonsContainer/HBoxContainer/EmitButton" to="." method="_on_EmitButton_pressed"]
-[connection signal="pressed" from="ButtonsContainer/HBoxContainer/StopButton" to="." method="_on_StopButton_pressed"]
+[connection signal="pressed" from="ButtonsContainer/HBoxContainer/EmitStopButton" to="." method="_on_EmitStopButton_pressed"]
 [connection signal="pressed" from="ButtonsContainer/HBoxContainer/RenderButton" to="." method="_on_RenderButton_pressed"]
 [connection signal="toggled" from="ButtonsContainer/HBoxContainer/RenderCheckBox" to="." method="_on_RenderCheckBox_toggled"]
 [connection signal="pressed" from="BottomBar/VBoxContainer/HBoxContainer/HBoxContainerOutputPath/ChoosePathButton" to="." method="_on_ChoosePathButton_pressed"]
