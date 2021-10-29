@@ -127,6 +127,8 @@ func disable_buttons() -> void:
 
 
 func enable_buttons() -> void:
+	disable_buttons()
+
 	if "emitting" in particles_node:
 		emit_button.disabled = false
 
@@ -396,7 +398,6 @@ func _on_MaxFrames_text_changed(new_text: String) -> void:
 		show_error("Max frames cannot be greater than FPS.")
 		max_frames = fps
 		input_max_frames.text = str(max_frames)
-
 
 
 func _on_ContiguousMaxFramesCheckBox_toggled(button_pressed: bool) -> void:
